@@ -16,8 +16,8 @@ type CustomClaim struct {
 }
 
 func main() {
-	fmt.Println("Hello world")
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, CustomClaim{
+	// 1. Create custom claim with predefined claims (RegisteredClaims)
+	claims := CustomClaim{
 		Username: "john",
 		Roles:    []string{"FullAccess", "ReadWrite"},
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -25,8 +25,12 @@ func main() {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
-	})
+	}
 
+	// 2. Create tokem witn claims with specific signing method
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// 3. Create jwt token sign secret key
 	t, err := token.SignedString([]byte(SecretKey))
 	if err != nil {
 		panic(err)
